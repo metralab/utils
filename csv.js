@@ -19,7 +19,7 @@ const parseCsvFile = (data, delimiter = ',') => {
     .reduce((accumulator, currentValue, index, array) => {
         if (index % 2 === 0 && array[index + 1]) {
           accumulator.push({
-            't': array[index].t,
+            '': isoFromEuropeanDate(array[index].t),
             'tens. batteria [mV]': array[index].voltage,
             'temperatura interna [°C]': array[index].temperatureInt,
             'temperatura esterna [°C]': array[index].temperatureExt,
@@ -46,6 +46,13 @@ const parseData = (v, potentiometerLength = 50) => {
   const potentiometer2or3 = parseInt(v.slice(18, 24), 16) * potentiometerLength / ((2 ** 23) - 1); // millimeters
   return { potentiometers, voltage, temperatureInt, temperatureExt, potentiometer1, potentiometer2or3 };
 }
+
+const isoFromEuropeanDate = (dateTime) => {
+  [date, time] = dateTime.split(' ');
+  [day, month, year] = date.split('/');
+  [hour, minute] = time.split(':');
+  return `${year}-${month}-${day}T${hour}:${minute}:00`;
+};
 
 const exportCsv = (arrayHeader, arrayData, delimiter = ',', fileName = 'output') => {
     const header = arrayHeader.join(delimiter) + '\n';
