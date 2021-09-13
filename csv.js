@@ -1,25 +1,32 @@
 const readImage = (input) => {
   if (input.files && input.files[0]) {
+    // show a spinning wheel to signal loading:
+    const loadingSpinner = document.getElementById('csvLoadingSpinner');
+    loadingSpinner.style.display = 'block';
+
+    // parse and convert the CSV file:
     const reader = new FileReader();
     reader.readAsText(input.files[0]);
     reader.onload = (e) => {
       const csvFile = e.target.result;
-      const csvData = parseCsvFile(csvFile, '\t');
+      const csvData = parseCsvFile(csvFile, ';', '"');
       console.table(csvData);
       exportCsv(Object.keys(csvData[0]), csvData.map(d => Object.values(d)));
+      loadingSpinner.style.display = 'none';
     }
   }
 };
 
-const parseCsvFile = (data, delimiter = ',') => {
+const parseCsvFile = (data, delimiter = ',', quotesType = '', dateFormat = 'iso') => {
   return data.split(/\r\n|\n/)
     .map(row => row.split(delimiter))
+    .map(row => handleQuotes(row, quotesType))
     .filter(rowFields => rowFields[0].length == 24)
-    .map(rowFields => {return {'t': rowFields[1], ...parseData(rowFields[0])};})
+    .map(rowFields => {return {'t': rowFields[2], ...parseData(rowFields[0])};})
     .reduce((accumulator, currentValue, index, array) => {
         if (index % 2 === 0 && array[index + 1]) {
           accumulator.push({
-            '': isoFromEuropeanDate(array[index].t),
+            '': parseDate(array[index].t, dateFormat),
             'tens. batteria [mV]': array[index].voltage,
             'temperatura interna [°C]': array[index].temperatureInt,
             'temperatura esterna [°C]': array[index].temperatureExt,
@@ -36,6 +43,14 @@ const parseCsvFile = (data, delimiter = ',') => {
       }, []);
 };
 
+const handleQuotes = (row, quotesType = '') => {
+  if (quotesType === "'" || quotesType === '"') {
+    return row.map(col => col.slice(1, -1));
+  } else {
+    return row;
+  }
+}
+
 const parseData = (v, potentiometerLength = 50) => {
   const potentiometers = v.slice(0, 2) === '70' ? 'p1 & p2' : 'p1 & p3';
   const voltage = parseInt(v.slice(2, 4), 16) * 10 + 2000; // millivolts
@@ -45,6 +60,14 @@ const parseData = (v, potentiometerLength = 50) => {
   const potentiometer1 = parseInt(v.slice(12, 18), 16) * potentiometerLength / ((2 ** 23) - 1); // millimeters
   const potentiometer2or3 = parseInt(v.slice(18, 24), 16) * potentiometerLength / ((2 ** 23) - 1); // millimeters
   return { potentiometers, voltage, temperatureInt, temperatureExt, potentiometer1, potentiometer2or3 };
+}
+
+const parseDate = (dateTime, dateFormat = 'iso') => {
+  if (dateFormat === 'european') {
+    return isoFromEuropeanDate(dateTime);
+  } else {
+    return dateTime;
+  }
 }
 
 const isoFromEuropeanDate = (dateTime) => {

@@ -1,0 +1,36 @@
+html {
+    font-family: "Montserrat", sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #EEE;
+    color: #232323;
+}
+
+header {
+    margin: 0 auto 1em auto;
+    padding: 1em;
+    text-align: center;
+    background-color: rgba(75, 175, 255, 0.3);
+    box-shadow: 0 2px 4px 0 rgba(25, 50, 100, 0.3);
+}
+
+main {
+    margin: 1em auto;
+    padding: 1em;
+}
+
+.utility {
+    margin: 2em auto;
+    padding: 1em;
+    background-color: rgba(75, 175, 255, 0.2);
+    box-shadow: 1px 3px 5px 0 rgba(25, 50, 100, 0.2);
+    border-radius: 3px;
+    max-width: 40em;
+}
+
+#csvFileForm input {
+    max-width: 100%;
+}

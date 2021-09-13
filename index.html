@@ -3,13 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Metralab utils</title>
+    <title>Metralab CSV utils</title>
     <meta name="author" content="Giorgio Giuffrè" />
     <meta name="description" content="Metralab's utility functions" />
-    <meta name="keywords" content="metralab,utility" />
+    <meta name="keywords" content="metralab,utility,csv,utils" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" />
+    <link rel="stylesheet" href="main.css" type="text/css" />
+    <link rel="stylesheet" href="loading_spinner.css" type="text/css" />
     <script type="text/javascript" src="csv.js"></script>
   </head>
   <body>
-    <input type="file" id="csvUpload" onChange="readImage(this)" />
+    <header>
+      <h1>Metralab CSV utilities</h1>
+    </header>
+    <main>
+      <div class="utility" id="csvFileForm">
+        <h2>Potenziometri</h2>
+        <p>Carica qui il file CSV:</p>
+        <input type="file" id="csvUpload" onChange="readImage(this)" />
+        <div id="csvLoadingSpinner" class="loading-spinner"><div></div><div></div><div></div><div></div></div>
+      </div>
+      <div class="utility">
+        <h2>Deformata</h2>
+        <p>Per la deformata di un ponte vai all'<a href="https://metralab.github.io/metralab-app">altra pagina web</a>.</p>
+      </div>
+    </main>
   </body>
 </html>
