@@ -19,26 +19,26 @@ const readImage = (input) => {
   }
 };
 
-const parseCsvFile = (data, delimiter = ',', quotesType = '', dateFormat = 'iso', dataColumnIndex = 0, timeColumnIndex = 2) => {
+const parseCsvFile = (data, delimiter = ',', quotesType = '', dataColumnIndex = 0, timeColumnIndex = 2, dateFormat = 'iso') => {
   return data.split(/\r\n|\n/)
     .map(row => row.split(delimiter))
     .map(row => handleQuotes(row, quotesType))
     .filter(rowFields => rowFields[0].length == 24)
-    .map(rowFields => {return {'t': rowFields[2], ...parseData(rowFields[0])};})
+    .map(rowFields => {return {'t': rowFields[timeColumnIndex], ...parseData(rowFields[dataColumnIndex])};})
     .reduce((accumulator, currentValue, index, array) => {
         if (index % 2 === 0 && array[index + 1]) {
           accumulator.push({
             't': parseDate(array[index].t, dateFormat),
             'tens. batteria [mV]': array[index].voltage,
-            'temperatura interna [°C]': array[index].temperatureInt,
-            'temperatura esterna [°C]': array[index].temperatureExt,
+            'temp. interna [°C]': array[index].temperatureInt,
+            'temp. esterna [°C]': array[index].temperatureExt,
             'P1 [mm]': array[index].potentiometer1,
             'P2 [mm]': array[index].potentiometer2or3,
             'P3 [mm]': array[index + 1].potentiometer2or3,
             'P1 [mm] (t + 15 min.)': array[index + 1].potentiometer1,
             'tens. batteria [mV] (t + 15 min.)': array[index + 1].voltage,
-            'temperatura interna [°C] (t + 15 min.)': array[index + 1].temperatureInt,
-            'temperatura esterna [°C] (t + 15 min.)': array[index + 1].temperatureExt,
+            'temp. interna [°C] (t + 15 min.)': array[index + 1].temperatureInt,
+            'temp. esterna [°C] (t + 15 min.)': array[index + 1].temperatureExt,
           });
         }
         return accumulator;
