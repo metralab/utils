@@ -24,6 +24,8 @@
         <p>Carica qui il file CSV:</p>
         <input type="file" id="csvUpload" onChange="readImage(this)" />
         <div id="csvLoadingSpinner" class="loading-spinner"><div></div><div></div><div></div><div></div></div>
+        <p><label for="dataColumnIndex">Colonna dati: </label><input type="number" id="dataColumnIndex" name="dataColumnIndex" size="5" min="1" max="10" value="1" /></p>
+        <p><label for="timeColumnIndex">Colonna tempo: </label><input type="number" id="timeColumnIndex" name="timeColumnIndex" size="5" min="1" max="10" value="3" /></p>
       </div>
       <div class="utility">
         <h2>Deformata</h2>

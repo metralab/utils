@@ -9,7 +9,9 @@ const readImage = (input) => {
     reader.readAsText(input.files[0]);
     reader.onload = (e) => {
       const csvFile = e.target.result;
-      const csvData = parseCsvFile(csvFile, ';', '"');
+      const dataColumnIndex = (document.getElementById('dataColumnIndex').value || 1) - 1;
+      const timeColumnIndex = (document.getElementById('timeColumnIndex').value || 3) - 1;
+      const csvData = parseCsvFile(csvFile, ';', '"', dataColumnIndex, timeColumnIndex);
       console.table(csvData);
       exportCsv(Object.keys(csvData[0]), csvData.map(d => Object.values(d)));
       loadingSpinner.style.display = 'none';
@@ -17,7 +19,7 @@ const readImage = (input) => {
   }
 };
 
-const parseCsvFile = (data, delimiter = ',', quotesType = '', dateFormat = 'iso') => {
+const parseCsvFile = (data, delimiter = ',', quotesType = '', dateFormat = 'iso', dataColumnIndex = 0, timeColumnIndex = 2) => {
   return data.split(/\r\n|\n/)
     .map(row => row.split(delimiter))
     .map(row => handleQuotes(row, quotesType))
@@ -26,7 +28,7 @@ const parseCsvFile = (data, delimiter = ',', quotesType = '', dateFormat = 'iso'
     .reduce((accumulator, currentValue, index, array) => {
         if (index % 2 === 0 && array[index + 1]) {
           accumulator.push({
-            '': parseDate(array[index].t, dateFormat),
+            't': parseDate(array[index].t, dateFormat),
             'tens. batteria [mV]': array[index].voltage,
             'temperatura interna [°C]': array[index].temperatureInt,
             'temperatura esterna [°C]': array[index].temperatureExt,
